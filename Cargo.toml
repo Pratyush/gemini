@@ -35,17 +35,6 @@ name = "msm_bench"
 harness = false
 name = "verifier_bench"
 
-[patch.crates-io]
-ark-std = {git = "https://github.com/arkworks-rs/utils"}
-ark-ec = {git = "https://github.com/arkworks-rs/algebra"}
-ark-ff = {git = "https://github.com/arkworks-rs/algebra"}
-ark-test-curves = {git = "https://github.com/arkworks-rs/algebra"}
-ark-serialize = {git = "https://github.com/arkworks-rs/algebra"}
-ark-serialize-derive = {git = "https://github.com/arkworks-rs/algebra"}
-ark-poly = {git = "https://github.com/arkworks-rs/algebra"}
-ark-bls12-381 = {git = "https://github.com/arkworks-rs/algebra"}
-ark-relations = {git = "https://github.com/arkworks-rs/snark"}
-
 [dependencies]
 #ark-bls12-381 = "0.4.0"
 ark-ec = "0.4.0"
@@ -54,19 +43,19 @@ ark-poly = "0.4.0"
 ark-relations = "0.4.0"
 ark-serialize = {version = "0.4.0", features = ["derive"]}
 ark-std ="0.4.0"
-hashbrown = "0.12.0"
-log = "0.4.16"
+hashbrown = "0.14.5"
+log = "0.4.22"
 # memmap = "0.7.0"
 merlin = "3.0.0"
 rand = "0.8.5"
-rayon = {version = "1.5", optional = true}
+rayon = {version = "1", optional = true}
 
 [target.x86_64-unknown-linux-gnu.dependencies]
 procinfo = "0.4.2"
 libc = "0.2.117"
 
 [dev-dependencies]
-#ark-bls12-381 = {version = "^0.4.0", default-features = false, features = ["curve"]}
+ark-bls12-381 = {version = "^0.4.0", default-features = false, features = ["curve"]}
 clap = {version = "3.1.6", features = ["derive"]}
 criterion = {version = "0.3.4", features = ["html_reports"]}
 env_logger = "0.8.3"
