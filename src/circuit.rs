@@ -87,68 +87,6 @@ impl<ConstraintF: Field> ConstraintSynthesizer<ConstraintF> for Circuit<Constrai
     }
 }
 
-#[derive(Clone)]
-/// Define a constraint system that would trigger outlining.
-struct OutlineTestCircuit;
-
-impl<F: Field> ConstraintSynthesizer<F> for OutlineTestCircuit {
-    fn generate_constraints(self, cs: ConstraintSystemRef<F>) -> Result<(), SynthesisError> {
-        // This program checks if the input elements are between 0 and 9.
-        //
-        // Note that this constraint system is neither the most intuitive way nor
-        // the most efficient way for such a task. It is for testing purposes,
-        // as we want to trigger the outlining.
-        //
-        let mut inputs = Vec::new();
-        for i in 0..5 {
-            inputs.push(cs.new_input_variable(|| Ok(F::from(i as u128)))?);
-        }
-
-        for (i, &input) in inputs.iter().enumerate().take(5) {
-            let mut total_count_for_this_input = cs.new_lc(lc!()).unwrap();
-
-            for bucket in 0..10 {
-                let count_increment_for_this_bucket =
-                    cs.new_witness_variable(|| Ok(F::from(i == bucket)))?;
-
-                total_count_for_this_input = cs
-                    .new_lc(
-                        lc!()
-                            + (F::one(), total_count_for_this_input)
-                            + (F::one(), count_increment_for_this_bucket),
-                    )
-                    .unwrap();
-
-                // Only when `input[i]` equals `bucket` can `count_increment_for_this_bucket` be nonzero.
-                //
-                // A malicious prover can make `count_increment_for_this_bucket` neither 0 nor 1.
-                // But the constraint on `total_count_for_this_input` will reject such case.
-                //
-                // At a high level, only one of the `count_increment_for_this_bucket` among all the buckets
-                // could be nonzero, which equals `total_count_for_this_input`. Thus, by checking whether
-                // `total_count_for_this_input` is 1, we know this input number is in the range.
-                //
-                cs.enforce_constraint(
-                    lc!() + (F::one(), input)
-                        - (F::from(bucket as u128), ark_relations::r1cs::Variable::One),
-                    lc!() + (F::one(), count_increment_for_this_bucket),
-                    lc!(),
-                )?;
-            }
-
-            // Enforce `total_count_for_this_input` to be one.
-            cs.enforce_constraint(
-                lc!(),
-                lc!(),
-                lc!() + (F::one(), total_count_for_this_input)
-                    - (F::one(), ark_relations::r1cs::Variable::One),
-            )?;
-        }
-
-        Ok(())
-    }
-}
-
 pub fn generate_relation<F: PrimeField, C: ConstraintSynthesizer<F>>(circuit: C) -> R1cs<F> {
     let pcs = ConstraintSystem::new_ref();
     pcs.set_optimization_goal(OptimizationGoal::Weight);

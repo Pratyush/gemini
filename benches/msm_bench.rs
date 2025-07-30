@@ -1,9 +1,8 @@
 #[macro_use]
 extern crate criterion;
 
-use ark_ec::msm::VariableBaseMSM as ArkworksMSM;
+use ark_ec::VariableBaseMSM as ArkworksMSM;
 use ark_ec::CurveGroup;
-use ark_ec::ProjectiveCurve;
 use ark_std::test_rng;
 use ark_std::UniformRand;
 use criterion::{BenchmarkId, Criterion};

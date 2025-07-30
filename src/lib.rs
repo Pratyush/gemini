@@ -51,8 +51,6 @@
 #![feature(
     iter_advance_by,
     iter_next_chunk,
-    slice_as_chunks,
-    array_chunks
 )]
 #![no_std]
 #![deny(unused_comparisons, bare_trait_objects, unused_must_use)]

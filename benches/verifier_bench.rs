@@ -32,7 +32,7 @@ fn batch_verify_bench(c: &mut Criterion) {
         let vk = (&ck).into();
         let index_comms = ck.batch_commit(&vec![row, col, val_a, val_b, val_c]);
 
-        let proof = Proof::new_time(&r1cs, &ck);
+        let proof = Proof::new_time(&ck, &r1cs, &index_comms);
 
         group.sample_size(10).bench_with_input(
             BenchmarkId::new("Verify/".to_string(), d),
